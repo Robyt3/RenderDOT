@@ -17,20 +17,23 @@ if (-not $?) {
 	[System.Windows.MessageBox]::Show('Failed to run dot. Is dot available on the system path?', 'Running dot failed.', [System.Windows.MessageBoxButton]::Ok, [System.Windows.MessageBoxImage]::Error)
 	return
 }
+$dotFile = (Get-Item $args[0])
 
 [System.Windows.Forms.Application]::EnableVisualStyles()
 $screen = [System.Windows.Forms.Screen]::AllScreens[0]
 $image = [System.Drawing.Image]::Fromfile($outputFile)
-$form = New-Object Windows.Forms.Form
-$form.Text = $args[0]
-# Add extra space for scrollbars
-$form.Width = (($image.Size.Width+16), $screen.WorkingArea.Width | Measure-Object -Minimum).Minimum
-$form.Height = (($image.Size.Height+40), $screen.WorkingArea.Height | Measure-Object -Minimum).Minimum
-$form.AutoScroll = $true
-$pictureBox = New-Object Windows.Forms.PictureBox
-$pictureBox.Width = $image.Size.Width
-$pictureBox.Height = $image.Size.Height
-$pictureBox.Image = $image
+$form = New-Object Windows.Forms.Form -Property @{
+	Text = $args[0]
+	# Add extra space for scrollbars
+	Width = (($image.Size.Width+16), $screen.WorkingArea.Width | Measure-Object -Minimum).Minimum
+	Height = (($image.Size.Height+40), $screen.WorkingArea.Height | Measure-Object -Minimum).Minimum
+	AutoScroll = $true
+}
+$pictureBox = New-Object Windows.Forms.PictureBox -Property @{
+	Width = $image.Size.Width
+	Height = $image.Size.Height
+	Image = $image
+}
 $form.Controls.add($pictureBox)
 $form.Add_KeyDown({
 	if ($_.KeyCode -eq "Escape") {
@@ -42,6 +45,16 @@ $form.Add_KeyDown({
 		}
 		if ($_.KeyCode -eq "E") {
 			Start-Process $outputFile
+		}
+		if ($_.KeyCode -eq "S") {
+			$saveDialog = New-Object System.Windows.Forms.SaveFileDialog -Property @{
+				InitialDirectory = Get-Item $dotFile.Directory
+				FileName = $dotFile.BaseName
+				Filter = "PNG files (*.png)|*.png"
+			}
+			if ($saveDialog.ShowDialog() -eq [System.Windows.Forms.DialogResult]::OK) {
+				$image.save($saveDialog.FileName)
+			}
 		}
 	}
 })

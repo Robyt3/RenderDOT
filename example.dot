@@ -2,6 +2,7 @@ digraph G {
 	"Windows Explorer" -> "PsRunArg.vbs" [label="  Windows Script Host  "];
 	"PsRunArg.vbs" -> "RenderDOT.ps1" [label="  Powershell with hidden console "];
 	"RenderDOT.ps1" [penwidth=3];
+	"RenderDOT.ps1" -> "Save image to file" [label="  Ctrl+S  "];
 	"RenderDOT.ps1" -> "Copy image to clipboard" [label="  Ctrl+C  "];
 	"RenderDOT.ps1" -> "Open image in external viewer" [label="  Ctrl+E  "];
 	"RenderDOT.ps1" -> "Close viewer" [label="  Esc  "];

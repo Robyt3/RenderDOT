@@ -18,6 +18,7 @@ After installing, you should be able to double click a dot file to open a simple
 
 The following **hotkeys** are available:
 
+- Ctrl + S: save the rendered image to a file
 - Ctrl + C: copy the rendered image into the clipboard
 - Ctrl + E: open the rendered image in the default external viewer
 - Esc: Close viewer
