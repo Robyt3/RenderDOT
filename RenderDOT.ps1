@@ -27,17 +27,20 @@ $image = [System.Drawing.Image]::Fromfile($outputFile)
 $form = New-Object Windows.Forms.Form -Property @{
 	Text = $args[0]
 	# Add extra space for scrollbars
-	Width = (($image.Size.Width+16), $screen.WorkingArea.Width | Measure-Object -Minimum).Minimum
-	Height = (($image.Size.Height+40), $screen.WorkingArea.Height | Measure-Object -Minimum).Minimum
-	AutoScroll = $true
+	Width = (($image.Size.Width+34), $screen.WorkingArea.Width | Measure-Object -Minimum).Minimum
+	Height = (($image.Size.Height+56), $screen.WorkingArea.Height | Measure-Object -Minimum).Minimum
 }
-$pictureBox = New-Object Windows.Forms.PictureBox -Property @{
+$browser = New-Object System.Windows.Forms.WebBrowser -Property @{
+	DocumentText = '<html><body style="margin:0;padding:0;overflow:scroll"><img src="' + $outputFile + '"></body></html>'
 	Width = $image.Size.Width
 	Height = $image.Size.Height
-	Image = $image
+	Dock = [System.Windows.Forms.DockStyle]::Fill
+	IsWebBrowserContextMenuEnabled = $False
+	AllowNavigation = $False
+	AllowWebBrowserDrop = $False
 }
-$form.Controls.add($pictureBox)
-$form.Add_KeyDown({
+$form.Controls.add($browser)
+$browser.Add_PreviewKeyDown({
 	if ($_.KeyCode -eq "Escape") {
 		$form.Close()
 	}
@@ -58,6 +61,14 @@ $form.Add_KeyDown({
 				$image.save($saveDialog.FileName)
 			}
 		}
+	}
+	# Translate numpad 0, because WebBrowser does not support it
+	if ($_.KeyCode -eq "NumPad0") {
+		[System.Windows.Forms.SendKeys]::Send("0")
+	}
+	# Only forward zoom control key events to WebBrowser
+	if (-not (@("ControlKey", "Oemplus", "OemMinus", "D0", "Add", "Subtract") -contains $_.KeyCode)) {
+		$_.IsInputKey = $True
 	}
 })
 $form.KeyPreview = $true
