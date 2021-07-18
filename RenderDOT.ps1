@@ -13,10 +13,16 @@ if (-not $args[0] -or -not $args[0].EndsWith('.dot') -or -not (Test-Path $args[0
 	return
 }
 $outputFile = New-TemporaryFile | Rename-Item -NewName { $_.Name -replace '.tmp','.png' } -PassThru
-dot $args[0] -Tpng -o $outputFile.FullName
-if (-not $?) {
+try {
+	$dotOutput = & dot $args[0] -Tpng -o $outputFile.FullName 2>&1
+} catch {
 	[System.Windows.MessageBox]::Show('Failed to run dot. Is dot available on the system path?', 'Running dot failed.',
-		[System.Windows.MessageBoxButton]::Ok, [System.Windows.MessageBoxImage]::Error)  | Out-Null
+		[System.Windows.MessageBoxButton]::Ok, [System.Windows.MessageBoxImage]::Error) | Out-Null
+	return
+}
+if ($dotOutput) {
+	[System.Windows.MessageBox]::Show($dotOutput, 'Errors in dot graph file.',
+		[System.Windows.MessageBoxButton]::Ok, [System.Windows.MessageBoxImage]::Error) | Out-Null
 	return
 }
 $dotFile = Get-Item $args[0]
