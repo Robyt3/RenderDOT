@@ -7,8 +7,8 @@ Usage: powershell -File RenderDOT.ps1 example.dot
 Add-Type -AssemblyName 'System.Windows.Forms'
 Add-Type -AssemblyName PresentationCore,PresentationFramework
 
-if (-not $args[0] -or -not $args[0].EndsWith('.dot') -or -not (Test-Path $args[0] -PathType leaf)) {
-	[System.Windows.MessageBox]::Show('First argument must be the path of an existing dot file.', 'Wrong argument.',
+if (-not $args[0] -or -not (Test-Path $args[0] -PathType leaf)) {
+	[System.Windows.MessageBox]::Show('First argument must be the path of an existing file.', 'Wrong argument.',
 		[System.Windows.MessageBoxButton]::Ok, [System.Windows.MessageBoxImage]::Error) | Out-Null
 	return
 }
