@@ -10,11 +10,15 @@ Install [Graphviz](https://graphviz.org/), so the command `dot` is available on 
 
 Download this repository as a ZIP file and extract it into a new folder at a permanent location, or `git clone` the repository at a location of choice.
 
-Run `INSTALL.cmd` as admin and follow the instructions. The install script just calls `assoc` and `ftype` to create the file associations. Note that Windows 10 will still require consent from the user before the program is actually used as default. After running the install script, double click the `example.dot` file, check the checkbox to always use the Script Host for DOT files and confirm opening the file.
+Run `INSTALL.cmd` with admin privileges and follow the instructions.
+The install script calls `assoc` and `ftype` to create the file associations for `.gv` and `.dot` files.
+Note that Windows 10 onwards will require consent from the user before the program is actually used as default.
+After running the install script, double click the `example.gv` file,
+check the checkbox to always use the Script Host for this file type, and confirm opening the file.
 
 ## Usage
 
-After installing, you should be able to double click a DOT file to open a simple image viewer with default zoom hotkeys.
+After installing, you should be able to double click a `.gv`/`.dot` file to open a simple image viewer with default zoom hotkeys.
 
 The following additional **hotkeys** are available:
 
@@ -27,10 +31,11 @@ The following additional **hotkeys** are available:
 
 Replace the old files with the new files, after downloading the latest ZIP file. If you've installed using `git clone`, you can just use `git pull` to update.
 
-It's not necessary to run `INSTALL.cmd` again, unless the file association is missing or broken. You may need to do this after Windows 10 upgrades, as they may reset the file association for DOT files back to its default.
+It's not necessary to run `INSTALL.cmd` again, unless file associations are missing or broken.
+You may need to do this after some major Windows upgrades, as those sometimes reset some file associations.
 
 ## Uninstall
 
-Delete the folder.
+Run `UNINSTALL.cmd` with admin privileges and follow the instructions.
 
-Select a different application to open dot files with, if you previously had one.
+Delete the folder.
