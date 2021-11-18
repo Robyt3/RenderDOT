@@ -12,9 +12,10 @@ if (-not $args[0] -or -not (Test-Path $args[0] -PathType leaf)) {
 		[System.Windows.MessageBoxButton]::Ok, [System.Windows.MessageBoxImage]::Error) | Out-Null
 	return
 }
+$script:input = $args[0];
 $outputFile = New-TemporaryFile | Rename-Item -NewName { $_.Name -replace '.tmp','.png' } -PassThru
 try {
-	$dotOutput = & dot $args[0] -Tpng -o $outputFile.FullName 2>&1
+	$dotOutput = & dot $script:input -Tpng -o $outputFile.FullName 2>&1
 } catch {
 	[System.Windows.MessageBox]::Show('Failed to run dot. Is dot available on the system path?', 'Running dot failed.',
 		[System.Windows.MessageBoxButton]::Ok, [System.Windows.MessageBoxImage]::Error) | Out-Null
@@ -25,13 +26,13 @@ if ($dotOutput) {
 		[System.Windows.MessageBoxButton]::Ok, [System.Windows.MessageBoxImage]::Error) | Out-Null
 	return
 }
-$dotFile = Get-Item $args[0]
+$dotFile = Get-Item $script:input
 
 [System.Windows.Forms.Application]::EnableVisualStyles()
 $screen = [System.Windows.Forms.Screen]::AllScreens[0]
 $image = [System.Drawing.Image]::Fromfile($outputFile)
 $form = New-Object Windows.Forms.Form -Property @{
-	Text = $args[0]
+	Text = $script:input
 	# Add extra space for scrollbars
 	Width = (($image.Size.Width+34), $screen.WorkingArea.Width | Measure-Object -Minimum).Minimum
 	Height = (($image.Size.Height+56), $screen.WorkingArea.Height | Measure-Object -Minimum).Minimum
@@ -61,10 +62,15 @@ $browser.Add_PreviewKeyDown({
 			$saveDialog = New-Object System.Windows.Forms.SaveFileDialog -Property @{
 				InitialDirectory = $dotFile.Directory
 				FileName = $dotFile.BaseName
-				Filter = "PNG (*.png)|*.png"
+				Filter = "PDF (*.pdf)|*.pdf|PNG (*.png)|*.png"
 			}
 			if ($saveDialog.ShowDialog() -eq [System.Windows.Forms.DialogResult]::OK) {
-				$image.save($saveDialog.FileName)
+				if ($saveDialog.FileName.EndsWith(".pdf")) {
+					dot $script:input -Tpdf -Gmargin=0 -o $saveDialog.FileName
+				}
+				if ($saveDialog.FileName.EndsWith(".png")) {
+					$image.save($saveDialog.FileName)
+				}
 			}
 		}
 	}
