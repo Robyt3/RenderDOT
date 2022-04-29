@@ -31,11 +31,16 @@ $dotFile = Get-Item $script:input
 [System.Windows.Forms.Application]::EnableVisualStyles()
 $screen = [System.Windows.Forms.Screen]::AllScreens[0]
 $image = [System.Drawing.Image]::Fromfile($outputFile)
+# Add extra space for scrollbars
+$FormWidth = (($image.Size.Width+34), $screen.WorkingArea.Width | Measure-Object -Minimum).Minimum
+$FormHeight = (($image.Size.Height+56), $screen.WorkingArea.Height | Measure-Object -Minimum).Minimum
 $form = New-Object Windows.Forms.Form -Property @{
 	Text = $script:input
-	# Add extra space for scrollbars
-	Width = (($image.Size.Width+34), $screen.WorkingArea.Width | Measure-Object -Minimum).Minimum
-	Height = (($image.Size.Height+56), $screen.WorkingArea.Height | Measure-Object -Minimum).Minimum
+	Width = $FormWidth
+	Height = $FormHeight
+}
+if (($FormWidth -ge $screen.WorkingArea.Width) -and ($FormHeight -ge $screen.WorkingArea.Height)) {
+	$form.WindowState = [System.Windows.Forms.FormWindowState]::Maximized
 }
 $browser = New-Object System.Windows.Forms.WebBrowser -Property @{
 	DocumentText = '<html><body style="margin:0;padding:0;overflow:scroll"><img src="' + $outputFile + '"></body></html>'
