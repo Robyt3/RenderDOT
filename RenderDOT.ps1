@@ -67,11 +67,14 @@ $browser.Add_PreviewKeyDown({
 			$saveDialog = New-Object System.Windows.Forms.SaveFileDialog -Property @{
 				InitialDirectory = $dotFile.Directory
 				FileName = $dotFile.BaseName
-				Filter = "PDF (*.pdf)|*.pdf|PNG (*.png)|*.png"
+				Filter = "Portable Document Format (*.pdf)|*.pdf|Scalable Vector Graphics (*.svg)|*.svg|Portable Network Graphics (*.png)|*.png"
 			}
 			if ($saveDialog.ShowDialog() -eq [System.Windows.Forms.DialogResult]::OK) {
 				if ($saveDialog.FileName.EndsWith(".pdf")) {
 					dot $script:input -Tpdf -Gmargin=0 -o $saveDialog.FileName
+				}
+				if ($saveDialog.FileName.EndsWith(".svg")) {
+					dot $script:input -Tsvg -Gmargin=0 -o $saveDialog.FileName
 				}
 				if ($saveDialog.FileName.EndsWith(".png")) {
 					$image.save($saveDialog.FileName)

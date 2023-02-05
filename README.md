@@ -22,7 +22,7 @@ After installing, you should be able to double click a `.gv`/`.dot` file to open
 
 The following additional **hotkeys** are available:
 
-- Ctrl + S: save the rendered image to a PNG file, or export to a PDF file
+- Ctrl + S: save the rendered image to a PNG file, or export to a SVG/PDF file
 - Ctrl + C: copy the rendered image into the clipboard
 - Ctrl + E: open the rendered image in the default external viewer
 - Esc: Close viewer
