@@ -1,5 +1,5 @@
 <#
-RenderDOT - Copyright (c) 2021 Robert Müller
+RenderDOT - Copyright (c) 2021 - 2023 Robert Müller
 -----------------------------------------------------------
 Usage: powershell -File RenderDOT.ps1 example.dot
 #>
